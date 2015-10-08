@@ -1,0 +1,16 @@
+{
+  "name" : "Router::Tiny",
+  "source-url" : "",
+  "perl" : "v6",
+  "build-depends" : [ ],
+  "provides" : {
+    "Router::Tiny" : "lib/Router/Tiny.pm6"
+  },
+  "depends" : [ ],
+  "description" : "blah blah blah",
+  "test-depends" : [ ],
+  "version" : "*",
+  "authors" : [
+    "moznion"
+  ]
+}
