@@ -2,9 +2,9 @@ use v6;
 use Router::Tiny::Node;
 unit class Router::Tiny;
 
-has Router::Tiny::Node $.root is rw = Router::Tiny::Node.new(:key("'/'"));
-has $.regexp is rw; # can private?
-has @.leaves is rw; # can private?
+has Router::Tiny::Node $!root = Router::Tiny::Node.new(:key("'/'"));
+has $!regexp;
+has @!leaves;
 
 # Matcher stuff
 my $LEAF-IDX = 0;
@@ -15,7 +15,7 @@ has Int $!_paren-cnt = 0;
 has @!_leaves = [];
 has @!_parens = [];
 
-method !is-normal-capture(Str $pattern) returns Bool {
+method !is-captured-group(Str $pattern) returns Bool {
     # True if : ()
     # False if : []
     return $pattern.match(/'('/).defined;
@@ -47,7 +47,6 @@ my class PathActions {
         $/.make: ~$/;
     }
     method term($/) {
-        # say $/;
         $/.make: $/;
     }
     method TOP($/) {
@@ -59,9 +58,9 @@ method add(Router::Tiny:D: Str $path, Str $stuff) {
     my $p = $path;
     $p ~~ s!^'/'!!;
 
-    $.regexp = Nil; # clear cache
+    $!regexp = Nil; # clear cache
 
-    my $node = $.root;
+    my $node = $!root;
     my @capture;
     my $matched = PathGrammar.parse($p, :actions(PathActions));
     for $matched.made -> $m {
@@ -69,7 +68,7 @@ method add(Router::Tiny:D: Str $path, Str $stuff) {
         given $m.hash.keys[0] {
             when 'named-regex-capture' {
                 my ($name, $pattern) = $captured.split(':', 2);
-                if $pattern.defined && self!is-normal-capture($pattern) {
+                if $pattern.defined && self!is-captured-group($pattern) {
                     die q{You can't include parens in your custom rule.};
                 }
                 @capture.push($name);
@@ -101,7 +100,7 @@ method match(Str $path) {
 
     my $regexp = self!regexp;
     if ($path.match($regexp).defined) {
-        my ($captured, $stuff) = @.leaves[$LEAF-IDX];
+        my ($captured, $stuff) = @!leaves[$LEAF-IDX];
         my %captured;
         my $i = 0;
         for @CAPTURED.map({ .Str }) -> $cap {
@@ -119,10 +118,10 @@ method match(Str $path) {
 }
 
 method !regexp() {
-    unless $.regexp.defined {
+    unless $!regexp.defined {
         self!build-regexp;
     }
-    return $.regexp;
+    return $!regexp;
 }
 
 method !build-regexp() {
@@ -130,13 +129,15 @@ method !build-regexp() {
     temp @!_parens = [];
     temp $!_paren-cnt = 0;
 
-    my $re = self!to-regexp($.root);
+    my $re = self!to-regexp($!root);
 
-    @.leaves = @!_leaves;
-    $.regexp = rx{^<$re>};
+    @!leaves = @!_leaves;
+    $!regexp = rx{^<$re>};
 }
 
 method !to-regexp(Router::Tiny::Node $node) {
+    temp @!_parens = @!_parens;
+
     my $key = $node.key;
     if $key.match(/'('/).defined {
         @!_parens.push($!_paren-cnt);
@@ -145,30 +146,30 @@ method !to-regexp(Router::Tiny::Node $node) {
 
     my @re;
     if ($node.children.elems > 0) {
-        @re.push(
-            $node.children.map(-> $child { self!to-regexp($child) })
-        );
+        @re.push([ $node.children.map(-> $child { self!to-regexp($child) }) ]);
     }
 
     if ($node.leaf) {
         @!_leaves.push($node.leaf);
         @re.push(sprintf(
             '${ $LEAF-IDX=%s; @CAPTURED = (%s) }',
-            @!_leaves - 1,
+            @!_leaves.elems - 1,
             @!_parens.map(-> $paren { "\$$paren" }).join(',')
         ));
+        $!_paren-cnt = 0;
     }
 
-    my $re = $node.key;
-    if (@re == 0) {
+    my $re = @re[0];
+    my $regexp = $node.key;
+    if ($re.isa(Str) || $re == 1) {
+        $regexp ~= $re[0];
+    } elsif ($re == 0) {
         # nop
-    } elsif (@re == 1) {
-        $re ~= @re[0];
     } else {
-        $re ~= '[' ~ @re.join('|') ~ ']';
+        $regexp ~= '[' ~ $re.join('|') ~ ']';
     }
 
-    return $re;
+    return $regexp;
 }
 
 =begin pod

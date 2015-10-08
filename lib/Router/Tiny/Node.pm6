@@ -7,7 +7,7 @@ has Str $.key;
 has @.children = [];
 
 method add-node(Router::Tiny::Node:D: Str $child) {
-    for @.children -> $c { # TODO filter
+    for @.children -> $c {
         if $c.key eq $child {
             return $c;
         }
