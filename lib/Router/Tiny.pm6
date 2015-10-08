@@ -6,6 +6,10 @@ has Router::Tiny::Node $.root is rw = Router::Tiny::Node.new(:key("'/'"));
 has $.regexp is rw; # can private?
 has @.leaves is rw; # can private?
 
+# Matcher stuff
+my $LEAF-IDX = 0;
+my @CAPTURED = [];
+
 # Compiler stuff
 has Int $!_paren-cnt = 0;
 has @!_leaves = [];
@@ -55,7 +59,7 @@ method add(Router::Tiny:D: Str $path, Str $stuff) {
     my $p = $path;
     $p ~~ s!^'/'!!;
 
-    # $.regexp = Nil; # clear cache
+    $.regexp = Nil; # clear cache
 
     my $node = $.root;
     my @capture;
@@ -81,10 +85,10 @@ method add(Router::Tiny:D: Str $path, Str $stuff) {
                 $node = $node.add-node("(.+)");
             }
             when 'normal-string' {
-                $node = $node.add-node("'$captured'"); # TODO do not interpolate
+                $node = $node.add-node("'$captured'");
             }
             default {
-                # TODO
+                die 'Unknown type has come';
             }
         }
     }
@@ -96,14 +100,26 @@ method match(Str $path) {
     $path = '/' if $path eq '';
 
     my $regexp = self!regexp;
-    if ($regexp.defined && $path.match($regexp).defined) {
+    if ($path.match($regexp).defined) {
+        my ($captured, $stuff) = @.leaves[$LEAF-IDX];
+        my %captured;
+        my $i = 0;
+        for @CAPTURED.map({ .Str }) -> $cap {
+            %captured{@$captured[$i]} = $cap;
+            $i++;
+        }
+
+        return {
+            stuff    => $stuff,
+            captured => %captured
+        };
     }
 
     return ();
 }
 
 method !regexp() {
-    if !$.regexp.defined {
+    unless $.regexp.defined {
         self!build-regexp;
     }
     return $.regexp;
@@ -115,19 +131,16 @@ method !build-regexp() {
     temp $!_paren-cnt = 0;
 
     my $re = self!to-regexp($.root);
-    say $re;
 
     @.leaves = @!_leaves;
     $.regexp = rx{^<$re>};
 }
 
 method !to-regexp(Router::Tiny::Node $node) {
-    # temp @!_parens = @!_parens;
-
     my $key = $node.key;
     if $key.match(/'('/).defined {
-        $!_paren-cnt++;
         @!_parens.push($!_paren-cnt);
+        $!_paren-cnt++;
     }
 
     my @re;
@@ -138,6 +151,12 @@ method !to-regexp(Router::Tiny::Node $node) {
     }
 
     if ($node.leaf) {
+        @!_leaves.push($node.leaf);
+        @re.push(sprintf(
+            '${ $LEAF-IDX=%s; @CAPTURED = (%s) }',
+            @!_leaves - 1,
+            @!_parens.map(-> $paren { "\$$paren" }).join(',')
+        ));
     }
 
     my $re = $node.key;
