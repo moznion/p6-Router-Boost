@@ -4,6 +4,7 @@
   "perl" : "v6",
   "build-depends" : [ ],
   "provides" : {
+    "Router::Tiny::Node" : "lib/Router/Tiny/Node.pm6",
     "Router::Tiny" : "lib/Router/Tiny.pm6"
   },
   "depends" : [ ],
