@@ -11,9 +11,9 @@ my $LEAF-IDX = 0;
 my @CAPTURED = [];
 
 # Compiler stuff
-has Int $!_paren-cnt = 0;
-has @!_leaves = [];
-has @!_parens = [];
+has Int $!_PAREN-CNT = 0;
+has @!_LEAVES = [];
+has @!_PARENS = [];
 
 method !is-captured-group(Str $pattern) returns Bool {
     # True if : ()
@@ -114,7 +114,10 @@ method match(Str $path) {
         };
     }
 
-    return ();
+    return {
+        stuff    => '',
+        captured => {},
+    };
 }
 
 method !regexp() {
@@ -125,48 +128,47 @@ method !regexp() {
 }
 
 method !build-regexp() {
-    temp @!_leaves = [];
-    temp @!_parens = [];
-    temp $!_paren-cnt = 0;
+    temp @!_LEAVES = [];
+    temp @!_PARENS = [];
+    temp $!_PAREN-CNT = 0;
 
     my $re = self!to-regexp($!root);
 
-    @!leaves = @!_leaves;
+    @!leaves = @!_LEAVES;
     $!regexp = rx{^<$re>};
 }
 
 method !to-regexp(Router::Tiny::Node $node) {
-    temp @!_parens = @!_parens;
+    temp @!_PARENS = @!_PARENS;
 
     my $key = $node.key;
     if $key.match(/'('/).defined {
-        @!_parens.push($!_paren-cnt);
-        $!_paren-cnt++;
+        @!_PARENS.push($!_PAREN-CNT);
+        $!_PAREN-CNT++;
     }
 
     my @re;
     if ($node.children.elems > 0) {
-        @re.push([ $node.children.map(-> $child { self!to-regexp($child) }) ]);
+        @re.push(| $node.children.map(-> $child { self!to-regexp($child) }));
     }
 
-    if ($node.leaf) {
-        @!_leaves.push($node.leaf);
+    if $node.leaf.isa(List) {
+        @!_LEAVES.push($node.leaf);
         @re.push(sprintf(
             '${ $LEAF-IDX=%s; @CAPTURED = (%s) }',
-            @!_leaves.elems - 1,
-            @!_parens.map(-> $paren { "\$$paren" }).join(',')
+            @!_LEAVES.elems - 1,
+            @!_PARENS.map(-> $paren { "\$$paren" }).join(',')
         ));
-        $!_paren-cnt = 0;
+        $!_PAREN-CNT = 0;
     }
 
-    my $re = @re[0];
     my $regexp = $node.key;
-    if ($re.isa(Str) || $re == 1) {
-        $regexp ~= $re[0];
-    } elsif ($re == 0) {
+    if (@re.elems == 1) {
+        $regexp ~= @re[0];
+    } elsif (@re.elems == 0) {
         # nop
     } else {
-        $regexp ~= '[' ~ $re.join('|') ~ ']';
+        $regexp ~= '[' ~ @re.join('|') ~ ']';
     }
 
     return $regexp;
