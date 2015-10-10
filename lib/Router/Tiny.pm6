@@ -99,7 +99,7 @@ method match(Str $path) {
     $path = '/' if $path eq '';
 
     my $regexp = self!regexp;
-    if ($path.match($regexp).defined) {
+    if $path.match($regexp).defined {
         my ($captured, $stuff) = @!leaves[$LEAF-IDX];
         my %captured;
         my $i = 0;
@@ -148,7 +148,7 @@ method !to-regexp(Router::Tiny::Node $node) {
     }
 
     my @re;
-    if ($node.children.elems > 0) {
+    if $node.children.elems > 0 {
         @re.push(| $node.children.map(-> $child { self!to-regexp($child) }));
     }
 
@@ -163,9 +163,9 @@ method !to-regexp(Router::Tiny::Node $node) {
     }
 
     my $regexp = $node.key;
-    if (@re.elems == 1) {
+    if @re.elems == 1 {
         $regexp ~= @re[0];
-    } elsif (@re.elems == 0) {
+    } elsif @re.elems == 0 {
         # nop
     } else {
         $regexp ~= '[' ~ @re.join('|') ~ ']';
