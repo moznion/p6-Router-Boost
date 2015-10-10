@@ -54,7 +54,7 @@ method match(Router::Boost::Method:D: Str $request-method, Str $path) {
         my @allowed-methods;
 
         for @($matched<stuff>) -> $pattern {
-            if (self!method-match($request-method, $pattern[0])) {
+            if self!method-match($request-method, $pattern[0]) {
                 return {
                     stuff              => $pattern[1],
                     captured           => $matched<captured>,
