@@ -260,7 +260,7 @@ And if matching is failed, this method returns empty hash;
 
 '{...}' notation matches C<rx{(<-[/]>+)}>, and it will be captured.
 
-=head2 '{year:[0-9]+}' notation
+=head2 '{...:<[0..9]>+}' notation
 
     $router.add('/blog/{year:<[0..9]>+}/{month:<[0..9]> ** 2}', { controller => 'Blog', action => 'monthly' });
     ...

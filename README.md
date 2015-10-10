@@ -29,7 +29,7 @@ DESCRIPTION
 
 Router::Boost is a routing engine for perl6. This router pre-compiles a regex for each routes thus fast.
 
-This library is a perl6 port of [Router::Boom of perl5](Router::Boom of perl5).
+This library is a perl6 port of [Router::Boom of perl5](https://metacpan.org/pod/Router::Boom).
 
 METHODS
 =======
@@ -96,8 +96,8 @@ plain string
 
 '{...}' notation matches `rx{(<-[/]>+)}`, and it will be captured.
 
-'{year:[0-9]+}' notation
-------------------------
+'{...:<[0..9]>+}' notation
+--------------------------
 
     $router.add('/blog/{year:<[0..9]>+}/{month:<[0..9]> ** 2}', { controller => 'Blog', action => 'monthly' });
     ...
@@ -111,7 +111,7 @@ Note. You can't include normal capture in custom regular expression. i.e. You ca
 SEE ALSO
 ========
 
-[Router::Boom of perl5](Router::Boom of perl5)
+[Router::Boom of perl5](https://metacpan.org/pod/Router::Boom)
 
 COPYRIGHT AND LICENSE
 =====================
