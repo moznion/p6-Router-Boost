@@ -9,7 +9,7 @@
     "Router::Boost::Method" : "lib/Router/Boost/Method.pm6"
   },
   "depends" : [ ],
-  "description" : "blah blah blah",
+  "description" : "Routing engine for perl6",
   "test-depends" : [ ],
   "version" : "*",
   "authors" : [

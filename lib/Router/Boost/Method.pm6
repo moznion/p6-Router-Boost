@@ -10,14 +10,14 @@ has %!data;
 has @!path;
 has %!path-seen;
 
-method add(Router::Boost::Method:D: @method, Str $path, Str $stuff) {
+method add(Router::Boost::Method:D: @methods, Str $path, $stuff) {
     $!router = Nil; # clear cache
 
     unless %!path-seen{$path}++ {
         @!path.push($path);
     }
 
-    %!data{$path}.push([@method, $stuff]);
+    %!data{$path}.push([@methods, $stuff]);
 }
 
 method routes(Router::Boost::Method:D:) {
@@ -75,13 +75,6 @@ method match(Router::Boost::Method:D: Str $request-method, Str $path) {
     return {};
 }
 
-method regexp(Router::Boost::Method:D:) {
-    unless $!router.defined {
-        $!router = self!build-router
-    }
-    return $!router;
-}
-
 method !build-router(Router::Boost::Method:D:) {
     my $router = Router::Boost.new;
     @!path.map(-> $path { $router.add($path, %!data{$path}) });
@@ -92,7 +85,90 @@ method !build-router(Router::Boost::Method:D:) {
 
 =head1 NAME
 
-Router::Boost::Method - blah blah blah
+Router::Boost::Method - Router::Boost with HTTP method support
+
+=head1 SYNOPSIS
+
+  use Router::Boost::Method;
+
+  my $router = Router::Boost::Method.new();
+  $router.add(['GET'],         '/a',                 'g');
+  $router.add(['POST'],        '/a',                 'p');
+  $router.add([],              '/b',                 'any');
+  $router.add(['GET'],         '/c',                 'get only');
+  $router.add(['GET', 'HEAD'], '/d',                 'get/head');
+  $router.add(['GET'],         '/user/{id:\d ** 3}', 'capture');
+
+  my $dest = $router.match('GET', '/user/123');
+  # => {:allowed-methods($[]), :captured(${:id("123")}), :!is-method-not-allowed, :stuff("capture")}
+
+  my $dest = $router.match('/access/to/not/existed/path');
+  # => {}
+
+=head1 DESCRIPTION
+
+Router::Boost doesn't care the routing with HTTP method. It's simple and good.
+But it makes hard to implement the rule like this:
+
+  get  '/' => { 'get ok'  };
+  post '/' => { 'post ok' };
+
+Then, this class helps you to realize such functions.
+
+=head1 METHODS
+
+=item C<add(Router::Boost::Method:D: @methods, Str $path, Any $stuff)>
+
+Add a new path to the router.
+
+C<@methods> is a list to represent HTTP method. i.e. ['GET'], ['POST'], ['DELETE'], ['PUT'], etc.
+If you want to allow any HTTP methods, please pass C<[]> for this argument (e.g. C<$router.add([], '/any', 'any')>).
+You can specify the multiple HTTP methods in list like C<$router.add(['GET', 'HEAD'], '/', 'top')>>.
+
+C<$path> is the path string.
+
+C<$stuff> is the destination path data. Any data is OK.
+
+=item C<match(Router::Boost::Method:D: Str $request-method, Str $path)>
+
+Matching with the router.
+
+C<$request-method> is the HTTP request method.
+
+C<$path> is the path string.
+
+Return value is like following;
+
+  return {
+      stuff                 => 'foobar',
+      captured              => {},
+      is-method-not-allowed => False,
+      allowed-methods       => [],
+  };
+
+If the request is not matching with any path, this method returns empty hash.
+
+If the request is matched well then, return C<stuff>, C<captured>. And C<is_method_not_allowed> is False.
+
+If the request path is matched but the C<$request-method> is not matched, then C<stuff> and C<captured> is Nil. And C<is_method_not_allowed> is True. And then C<allowed-method> suggests allowed HTTP methods.
+
+=item C<< my @routes = $router->routes() >>
+
+Get the list of registered routes. Every routes has following schema.
+
+  [List, Str, Any]
+
+For example:
+
+  [['GET','HEAD'], "/foo", \&dispatch_foo]
+
+=head1 AUTHOR
+
+moznion E<lt>moznion@gmail.comE<gt>
+
+=head1 ORIGINAL AUTHOR
+
+Tokuhiro Matsuno
 
 =end pod
 
