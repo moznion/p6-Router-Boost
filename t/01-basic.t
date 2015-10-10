@@ -36,10 +36,7 @@ is-deeply $r.match('/gfx/2013/12'), {
     },
 };
 
-is-deeply $r.match('/gfx/2013/gorou'), {
-    stuff    => '',
-    captured => {},
-};
+is-deeply $r.match('/gfx/2013/gorou'), {};
 
 is-deeply $r.match('/download/foo/bar/baz.zip'), {
     stuff => 'dispatch_download',

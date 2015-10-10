@@ -109,15 +109,12 @@ method match(Str $path) {
         }
 
         return {
-            stuff    => $stuff,
+            stuff    => $stuff,   # TODO
             captured => %captured
         };
     }
 
-    return {
-        stuff    => '',
-        captured => {},
-    };
+    return {};
 }
 
 method !regexp() {
