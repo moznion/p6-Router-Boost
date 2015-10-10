@@ -1,17 +1,19 @@
+[![Build Status](https://travis-ci.org/moznion/p6-Router-Boost.svg?branch=master)](https://travis-ci.org/moznion/p6-Router-Boost)
+
 NAME
 ====
 
-Router::Tiny - blah blah blah
+Router::Boost - blah blah blah
 
 SYNOPSIS
 ========
 
-    use Router::Tiny;
+    use Router::Boost;
 
 DESCRIPTION
 ===========
 
-Router::Tiny is ...
+Router::Boost is ...
 
 COPYRIGHT AND LICENSE
 =====================

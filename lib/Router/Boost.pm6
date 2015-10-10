@@ -1,9 +1,9 @@
 use v6;
-use Router::Tiny::Node;
+use Router::Boost::Node;
 
-unit class Router::Tiny;
+unit class Router::Boost;
 
-has Router::Tiny::Node $!root = Router::Tiny::Node.new(:key("'/'"));
+has Router::Boost::Node $!root = Router::Boost::Node.new(:key("'/'"));
 has Regex $!regexp;
 has @!leaves;
 
@@ -55,7 +55,7 @@ my class PathActions {
     }
 }
 
-method add(Router::Tiny:D: Str $path, $stuff) {
+method add(Router::Boost:D: Str $path, $stuff) {
     my $p = $path;
     $p ~~ s!^'/'!!;
 
@@ -96,7 +96,7 @@ method add(Router::Tiny:D: Str $path, $stuff) {
     $node.leaf = [[@capture], $stuff];
 }
 
-method match(Str $path) {
+method match(Router::Boost:D: Str $path) {
     $path = '/' if $path eq '';
 
     my $regexp = self!regexp;
@@ -118,14 +118,14 @@ method match(Str $path) {
     return {};
 }
 
-method !regexp() {
+method !regexp(Router::Boost:D:) {
     unless $!regexp.defined {
         self!build-regexp;
     }
     return $!regexp;
 }
 
-method !build-regexp() {
+method !build-regexp(Router::Boost:D:) {
     temp @!_LEAVES = [];
     temp @!_PARENS = [];
     temp $!_PAREN-CNT = 0;
@@ -136,7 +136,7 @@ method !build-regexp() {
     $!regexp = rx{^<$re>};
 }
 
-method !to-regexp(Router::Tiny::Node $node) {
+method !to-regexp(Router::Boost:D: Router::Boost::Node $node) {
     temp @!_PARENS = @!_PARENS;
 
     my $key = $node.key;
@@ -176,15 +176,15 @@ method !to-regexp(Router::Tiny::Node $node) {
 
 =head1 NAME
 
-Router::Tiny - blah blah blah
+Router::Boost - blah blah blah
 
 =head1 SYNOPSIS
 
-  use Router::Tiny;
+  use Router::Boost;
 
 =head1 DESCRIPTION
 
-Router::Tiny is ...
+Router::Boost is ...
 
 =head1 COPYRIGHT AND LICENSE
 

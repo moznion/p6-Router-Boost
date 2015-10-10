@@ -1,16 +1,16 @@
 use v6;
-use Router::Tiny;
+use Router::Boost;
 
-unit class Router::Tiny::Method;
+unit class Router::Boost::Method;
 
-has Router::Tiny $!router;
+has Router::Boost $!router;
 
 has %!data;
 
 has @!path;
 has %!path-seen;
 
-method add(@method, Str $path, Str $stuff) {
+method add(Router::Boost::Method:D: @method, Str $path, Str $stuff) {
     $!router = Nil; # clear cache
 
     unless %!path-seen{$path}++ {
@@ -20,7 +20,7 @@ method add(@method, Str $path, Str $stuff) {
     %!data{$path}.push([@method, $stuff]);
 }
 
-method routes() {
+method routes(Router::Boost::Method:D:) {
     my @routes;
 
     for @!path -> $path {
@@ -33,7 +33,7 @@ method routes() {
     return @routes;
 }
 
-method !method-match(Str $request-method, @matcher) {
+method !method-match(Router::Boost::Method:D: Str $request-method, @matcher) {
     if @matcher.elems === 0 {
         return True;
     }
@@ -45,7 +45,7 @@ method !method-match(Str $request-method, @matcher) {
     return False;
 }
 
-method match(Str $request-method, Str $path) {
+method match(Router::Boost::Method:D: Str $request-method, Str $path) {
     unless $!router.defined {
         $!router = self!build-router;
     }
@@ -75,15 +75,15 @@ method match(Str $request-method, Str $path) {
     return {};
 }
 
-method regexp() {
+method regexp(Router::Boost::Method:D:) {
     unless $!router.defined {
         $!router = self!build-router
     }
     return $!router;
 }
 
-method !build-router() {
-    my $router = Router::Tiny.new;
+method !build-router(Router::Boost::Method:D:) {
+    my $router = Router::Boost.new;
     @!path.map(-> $path { $router.add($path, %!data{$path}) });
     return $router;
 }
@@ -92,7 +92,7 @@ method !build-router() {
 
 =head1 NAME
 
-Router::Tiny::Method - blah blah blah
+Router::Boost::Method - blah blah blah
 
 =end pod
 

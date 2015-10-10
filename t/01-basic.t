@@ -1,8 +1,8 @@
 use v6;
 use Test;
-use Router::Tiny;
+use Router::Boost;
 
-my $r = Router::Tiny.new();
+my $r = Router::Boost.new();
 $r.add('/',                         'dispatch_root');
 $r.add('/entrylist',                'dispatch_entrylist');
 $r.add('/:user',                    'dispatch_user');

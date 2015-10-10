@@ -1,11 +1,12 @@
 {
-  "name" : "Router::Tiny",
-  "source-url" : "",
+  "name" : "Router::Boost",
+  "source-url" : "git://github.com/moznion/p6-Router-Boost.git",
   "perl" : "v6",
   "build-depends" : [ ],
   "provides" : {
-    "Router::Tiny::Node" : "lib/Router/Tiny/Node.pm6",
-    "Router::Tiny" : "lib/Router/Tiny.pm6"
+    "Router::Boost" : "lib/Router/Boost.pm6",
+    "Router::Boost::Node" : "lib/Router/Boost/Node.pm6",
+    "Router::Boost::Method" : "lib/Router/Boost/Method.pm6"
   },
   "depends" : [ ],
   "description" : "blah blah blah",

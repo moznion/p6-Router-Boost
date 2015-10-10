@@ -1,8 +1,8 @@
 use v6;
 use Test;
-use Router::Tiny::Method;
+use Router::Boost::Method;
 
-my $r = Router::Tiny::Method.new();
+my $r = Router::Boost::Method.new();
 $r.add(['GET'],  '/a', 'g');
 $r.add(['POST'], '/a', 'p');
 $r.add([],       '/b', 'any');
