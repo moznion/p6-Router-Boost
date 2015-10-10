@@ -51,7 +51,7 @@ method match(Router::Boost::Method:D: Str $request-method, Str $path) {
     }
 
     if my $matched = $!router.match($path) {
-        my @allowed_methods;
+        my @allowed-methods;
 
         for @($matched<stuff>) -> $pattern {
             if (self!method-match($request-method, $pattern[0])) {
@@ -62,13 +62,13 @@ method match(Router::Boost::Method:D: Str $request-method, Str $path) {
                     allowed-methods    => [],
                 };
             }
-            @allowed_methods.append(|$pattern[0])
+            @allowed-methods.append(|$pattern[0])
         }
         return {
             stuff              => Nil,
             captured           => {},
             is-method-not-allowed => True,
-            allowed-methods    => @allowed_methods,
+            allowed-methods    => @allowed-methods,
         };
     }
 
@@ -148,9 +148,9 @@ Return value is like following;
 
 If the request is not matching with any path, this method returns empty hash.
 
-If the request is matched well then, return C<stuff>, C<captured>. And C<is_method_not_allowed> is False.
+If the request is matched well then, return C<stuff>, C<captured>. And C<is-method-not-allowed> is False.
 
-If the request path is matched but the C<$request-method> is not matched, then C<stuff> and C<captured> is Nil. And C<is_method_not_allowed> is True. And then C<allowed-method> suggests allowed HTTP methods.
+If the request path is matched but the C<$request-method> is not matched, then C<stuff> and C<captured> is Nil. And C<is-method-not-allowed> is True. And then C<allowed-method> suggests allowed HTTP methods.
 
 =head2 C<< my @routes = $router->routes() >>
 
@@ -160,7 +160,7 @@ Get the list of registered routes. Every routes has following schema.
 
 For example:
 
-  [['GET','HEAD'], "/foo", \&dispatch_foo]
+  [['GET','HEAD'], "/foo", \&dispatch-foo]
 
 =head1 AUTHOR
 
