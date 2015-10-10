@@ -1,9 +1,10 @@
 use v6;
 use Router::Tiny::Node;
+
 unit class Router::Tiny;
 
 has Router::Tiny::Node $!root = Router::Tiny::Node.new(:key("'/'"));
-has $!regexp;
+has Regex $!regexp;
 has @!leaves;
 
 # Matcher stuff

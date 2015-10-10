@@ -10,7 +10,7 @@ has %!data;
 has @!path;
 has %!path-seen;
 
-method add(@method, $path, $stuff) {
+method add(@method, Str $path, Str $stuff) {
     $!router = Nil; # clear cache
 
     unless %!path-seen{$path}++ {
@@ -84,9 +84,7 @@ method regexp() {
 
 method !build-router() {
     my $router = Router::Tiny.new;
-    @!path.map(-> $path {
-        $router.add($path, %!data{$path}) # TODO
-    });
+    @!path.map(-> $path { $router.add($path, %!data{$path}) });
     return $router;
 }
 
