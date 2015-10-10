@@ -54,7 +54,7 @@ my class PathActions {
     }
 }
 
-method add(Router::Tiny:D: Str $path, Str $stuff) {
+method add(Router::Tiny:D: Str $path, $stuff) {
     my $p = $path;
     $p ~~ s!^'/'!!;
 
@@ -109,7 +109,7 @@ method match(Str $path) {
         }
 
         return {
-            stuff    => $stuff,   # TODO
+            stuff    => $stuff,
             captured => %captured
         };
     }
