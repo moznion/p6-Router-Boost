@@ -130,4 +130,4 @@ And original perl5's Router::Boom is
 AUTHOR
 ======
 
-moznion ltmoznion@gmail.comgt
+moznion <moznion@gmail.com>

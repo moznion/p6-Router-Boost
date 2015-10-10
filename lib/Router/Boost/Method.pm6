@@ -164,7 +164,7 @@ For example:
 
 =head1 AUTHOR
 
-moznion E<lt>moznion@gmail.comE<gt>
+moznion <moznion@gmail.com>
 
 =head1 ORIGINAL AUTHOR
 

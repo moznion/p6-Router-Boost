@@ -291,6 +291,6 @@ And original perl5's Router::Boom is
 
 =head1 AUTHOR
 
-moznion E<lt>moznion@gmail.comE<gt>
+moznion <moznion@gmail.com>
 
 =end pod
