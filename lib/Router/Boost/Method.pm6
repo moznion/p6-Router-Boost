@@ -117,7 +117,7 @@ Then, this class helps you to realize such functions.
 
 =head1 METHODS
 
-=item C<add(Router::Boost::Method:D: @methods, Str $path, Any $stuff)>
+=head2 C<add(Router::Boost::Method:D: @methods, Str $path, Any $stuff)>
 
 Add a new path to the router.
 
@@ -129,7 +129,7 @@ C<$path> is the path string.
 
 C<$stuff> is the destination path data. Any data is OK.
 
-=item C<match(Router::Boost::Method:D: Str $request-method, Str $path)>
+=head2 C<match(Router::Boost::Method:D: Str $request-method, Str $path)>
 
 Matching with the router.
 
@@ -152,7 +152,7 @@ If the request is matched well then, return C<stuff>, C<captured>. And C<is_meth
 
 If the request path is matched but the C<$request-method> is not matched, then C<stuff> and C<captured> is Nil. And C<is_method_not_allowed> is True. And then C<allowed-method> suggests allowed HTTP methods.
 
-=item C<< my @routes = $router->routes() >>
+=head2 C<< my @routes = $router->routes() >>
 
 Get the list of registered routes. Every routes has following schema.
 

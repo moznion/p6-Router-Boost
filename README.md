@@ -34,7 +34,8 @@ This library is a perl6 port of [Router::Boom of perl5](Router::Boom of perl5).
 METHODS
 =======
 
-  * `add(Router::Boost:D: Str $path, Any $stuff)`
+`add(Router::Boost:D: Str $path, Any $stuff)`
+---------------------------------------------
 
 Add a new route.
 
@@ -42,7 +43,8 @@ Add a new route.
 
 `$stuff` is the destination path data. Any data is OK.
 
-  * `match(Router::Boost:D: Str $path)`
+`match(Router::Boost:D: Str $path)`
+-----------------------------------
 
 Match the route. If matching is succeeded, this method returns hash like so;
 

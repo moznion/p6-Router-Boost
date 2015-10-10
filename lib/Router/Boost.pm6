@@ -205,7 +205,7 @@ This library is a perl6 port of L<Router::Boom of perl5|https://metacpan.org/pod
 
 =head1 METHODS
 
-=item C<add(Router::Boost:D: Str $path, Any $stuff)>
+=head2 C<add(Router::Boost:D: Str $path, Any $stuff)>
 
 Add a new route.
 
@@ -213,7 +213,7 @@ C<$path> is the path string.
 
 C<$stuff> is the destination path data. Any data is OK.
 
-=item C<match(Router::Boost:D: Str $path)>
+=head2 C<match(Router::Boost:D: Str $path)>
 
 Match the route. If matching is succeeded, this method returns hash like so;
 
