@@ -23,14 +23,14 @@ method !is-captured-group(Str $pattern) returns Bool {
 }
 
 my grammar PathGrammar {
-    token named-regex-capture { \{ ( [\{<[0..9 ,]>+\} | <-[{ }]>+]+ ) \} } # /blog/{year:\d{4}}
+    token named-regex-capture { \{ ( [ \{<[0..9 ,]>+\} || <-[{ }]>+ ]+ ) \} } # /blog/{year:\d{4}}
     token named-capture       { ':' ( <[A..Z a..z  0..9 _]>+ ) }              # /blog/:year
     token wildcard            { \* }                                       # /blog/*/*
     token normal-string       { <-[{ : *]>+ }
-    token term                { <named-regex-capture> | <named-capture> | <wildcard> | <normal-string> }
+    token term                { [ <named-regex-capture> || <named-capture> || <wildcard> || <normal-string> ] }
 
-    rule TOP {
-        ^ <term> | <term>* $
+    token TOP {
+        ^ <term>* $
     }
 }
 
