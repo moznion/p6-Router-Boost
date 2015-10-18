@@ -36,10 +36,10 @@ my grammar PathGrammar {
 
 my class PathActions {
     method named-regex-capture($/) {
-        $/.make: ~$/.values[0];
+        $/.make: $/.list.first(*).Str;
     }
     method named-capture($/) {
-        $/.make: ~$/.values[0];
+        $/.make: $/.list.first(*).Str;
     }
     method wildcard($/) {
         $/.make: ~$/;
@@ -65,7 +65,7 @@ method add(Router::Boost:D: Str $path, $stuff) {
     my @capture;
     my $matched = PathGrammar.parse($p, :actions(PathActions));
     for $matched.made -> $m {
-        my $captured = $m.values[0].made.values[0];
+        my $captured = $m.values.first(*).made.values.first(*);
         given $m.hash.keys[0] {
             when 'named-regex-capture' {
                 my ($name, $pattern) = $captured.split(':', 2);
@@ -294,3 +294,4 @@ And original perl5's Router::Boom is
 moznion <moznion@gmail.com>
 
 =end pod
+
