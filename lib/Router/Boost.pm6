@@ -96,7 +96,7 @@ method add(Router::Boost:D: Str $path, $stuff) {
     $node.leaf = [[@capture], $stuff];
 }
 
-method match(Router::Boost:D: Str $path) {
+method match(Router::Boost:D: Str $path is copy) {
     $path = '/' if $path eq '';
 
     my $regexp = self!regexp;
